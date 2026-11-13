@@ -1,0 +1,22 @@
+{
+  "name": "@hephaestus/runner",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Runs one Hephaestus operation with the Claude Agent SDK. Used inside the local Docker runtime and on GitHub Actions runners.",
+  "bin": {
+    "heph-runner": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.323"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "vitest": "^5.1.0"
+  }
+}

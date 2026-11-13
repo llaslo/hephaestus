@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: hephaestus
+          POSTGRES_PASSWORD: hephaestus
+          POSTGRES_DB: hephaestus
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U hephaestus"
+          --health-interval 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://hephaestus:hephaestus@127.0.0.1:5432/hephaestus
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm typecheck
+      - run: pnpm db:migrate
+      - run: pnpm db:seed
+      - run: pnpm test
